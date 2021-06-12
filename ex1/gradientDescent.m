@@ -15,16 +15,14 @@ for iter = 1:num_iters
     % Hint: While debugging, it can be useful to print out the values
     %       of the cost function (computeCost) and gradient here.
     %
-    tempp0=0;
-    tempp1=0;
     temp0=0;
     temp1=0;
     for i=1:m
-        tempp0=tempp0+((transpose(theta)*transpose(X(i,:))-y(i))*X(i,1));
-        tempp1=tempp1+((transpose(theta)*transpose(X(i,:))-y(i))*X(i,2));
+        temp0=temp0+((transpose(theta)*transpose(X(i,:))-y(i))*X(i,1));
+        temp1=temp1+((transpose(theta)*transpose(X(i,:))-y(i))*X(i,2));
     end
-    temp0=theta(1)-alpha*(tempp0/(m));
-    temp1=theta(2)-alpha*(tempp1/(m));
+    temp0=theta(1)-alpha*(temp0/(m));
+    temp1=theta(2)-alpha*(temp1/(m));
     
     theta(1)=temp0;
     theta(2)=temp1;
