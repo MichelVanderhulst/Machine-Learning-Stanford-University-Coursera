@@ -33,12 +33,29 @@ Theta2_grad = zeros(size(Theta2));
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
-%
+
+
+% code taken from last week
+X=[ones(m,1) X];
+Z2 = X*Theta1'; %(5000x401)*(401x25) = 5000x25
+a2=[ones(m,1) sigmoid(Z2)]; %5000x26
+Z3=a2*Theta2'; %(5000x26)*(26x10)=5000x10
+a3=sigmoid(Z3);%5000x10
+h=a3;%5000x10
+
+y_binary = zeros(m,num_labels); %5000x10
+for i=1:m
+    y_binary(i,y(i))=1;
+end
+
 % Part 1: Feedforward the neural network and return the cost in the
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
-%
+
+J=(-1/m)*sum(sum((y_binary.*log(h)+(1-y_binary).*log(1-h))));
+
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -53,16 +70,42 @@ Theta2_grad = zeros(size(Theta2));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-%
+
+%hint2 done above
+for i=1:m
+    % Forward Propagation for all layers. Here manually because only 3
+    % layers. 
+    %we know that a1=X(i,:)
+    Z2=X(i,:)*Theta1'; %(1x401)*(401x25)=1x25
+    a2=[ones(1,1) sigmoid(Z2)]; %1x26
+    Z3=a2*Theta2'; %(1x26)*(26x10)=1x10
+    a3=sigmoid(Z3);%1x10
+    h=a3;%1x10
+    
+    % \delta computations for (L-1), (L-2), ..., 2. 
+    delta3=h-y_binary(i,:);%(1x10)-(1x10)=1x10
+    delta2=delta3*Theta2.*sigmoidGradient([ones(1,1) Z2]); %(1x10)*(10x26).*function=1x26
+    
+    Theta2_grad=Theta2_grad+delta3'*a2; %(10x1)*(1x26)
+    Theta1_grad=Theta1_grad+delta2(2:end)'*X(i,:);%(25x1)*(1x401)
+end
+Theta2_grad=Theta2_grad/m;
+Theta1_grad=Theta1_grad/m;
+    
+    
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
 %               backpropagation. That is, you can compute the gradients for
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
-%
 
+% Regularized cost function
+J=J+(lambda/(2*m))*(sum(sum(Theta1(:,2:end).^2))+sum(sum(Theta2(:,2:end).^2)));
 
+% Regularized gradients
+Theta1_grad(:,2:end)=Theta1_grad(:,2:end)+(lambda/m)*Theta1(:,2:end);
+Theta2_grad(:,2:end)=Theta2_grad(:,2:end)+(lambda/m)*Theta2(:,2:end);
 
 
 
