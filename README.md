@@ -1,7 +1,7 @@
 # Exercises & Slides for the Stanford University Coursera Machine Learning course
 
-Done with Matlab2019b
-Weeks 1, 2 and 3 done
+Done with Matlab2019a
+Final grade 98%
 
 ## Syllabus
 
